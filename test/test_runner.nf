@@ -56,8 +56,15 @@ workflow sequenceValidationWF {
     sequenceValidationFQ(seq_rg_fq, Channel.fromPath('data/seq_rg_fq_test_files/*').collect())
 }
 
+workflow preprocessWF {
+    include preprocess from '../modules/preprocess' params(reads_max_discard_fraction: 0.02)
+
+    preprocess(seq_rg, Channel.fromPath('data/test_rg_3.bam'))
+}
+
 // main workflow (runs by default)
 workflow {
     metadataValidationWF()
     sequenceValidationWF()
+    preprocessWF()
 }
