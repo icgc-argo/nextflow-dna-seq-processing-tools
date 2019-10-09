@@ -10,12 +10,7 @@ process extractJSONValues {
     container 'cfmanteiga/alpine-bash-curl-jq'
 
     input:
-    file bams
     val json
-
-    output:
-    file bams
-    stdout aligned_basename
 
     """
     jq '.aligned_basename' ${json}
@@ -34,19 +29,8 @@ process seqDataToLane {
 
     output:
     file '*.lane.bam'
-    stdout json
 
     """
     seq-data-to-lane-bam.py -p ${seq_rg_json} -d ${seq} -m ${params.reads_max_discard_fraction}
     """
-}
-
-workflow preprocess {
-    get: seq_rg_json
-
-    main: 
-        seqDataToLane(seq_rg_json, seq) | extractJSONValues
-
-    emit:
-        extractJSONValues.out
 }

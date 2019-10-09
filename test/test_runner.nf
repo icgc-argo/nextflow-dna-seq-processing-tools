@@ -31,19 +31,23 @@ process compareJSON {
 // Metadata Validation Workflow with test compare
 workflow metadataValidationWF {
     include metadataValidation from '../modules/metadata_validation' params(seq_exp_json_name: 'seq_exp.json', seq_rg_json_name: 'seq_rg.json')
-    include metadataValidation as metadataValidationFQ from '../modules/metadata_validation' params(seq_exp_json_name: 'seq_exp-fq.json', seq_rg_json_name: 'seq_rg-fq.json')
 
     exp_tsv = file('data/experiment.tsv')
     rg_tsv = file('data/read_group.tsv')
     file_tsv = file('data/file.tsv')
+
+    metadataValidation(exp_tsv, rg_tsv, file_tsv)
+    compareJSON(metadataValidation.out[1], seq_rg)
+}
+
+workflow metadataValidationFQWF {
+    include metadataValidation as metadataValidationFQ from '../modules/metadata_validation' params(seq_exp_json_name: 'seq_exp-fq.json', seq_rg_json_name: 'seq_rg-fq.json')
+    
     exp_tsv_fq = file('data/experiment-fq.tsv')
     rg_tsv_fq = file('data/read_group-fq.tsv')
     file_tsv_fq = file('data/file-fq.tsv')
 
-    metadataValidation(exp_tsv, rg_tsv, file_tsv)
     metadataValidationFQ(exp_tsv_fq, rg_tsv_fq, file_tsv_fq)
-
-    compareJSON(metadataValidation.out[1], seq_rg)
     compareJSON(metadataValidationFQ.out[1], seq_rg_fq)
 }
 
@@ -57,14 +61,24 @@ workflow sequenceValidationWF {
 }
 
 workflow preprocessWF {
-    include preprocess from '../modules/preprocess' params(reads_max_discard_fraction: 0.02)
+    include seqDataToLane from '../modules/preprocess' params(reads_max_discard_fraction: 0.02)
+    include extractJSONValues from '../modules/preprocess'
 
-    preprocess(seq_rg, Channel.fromPath('data/test_rg_3.bam'))
+    get: seq_rg_json
+    get: seq
+
+    main: 
+        seqDataToLane(seq_rg_json, seq)
+
+    emit:
+        data = seqDataToLane.out.stdout()
 }
 
 // main workflow (runs by default)
 workflow {
     metadataValidationWF()
     sequenceValidationWF()
-    preprocessWF()
+    preprocessWF(seq_rg, Channel.fromPath('data/test_rg_3.bam').collect())
+
+    preprocessWF.data.view()
 }
