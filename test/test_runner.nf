@@ -5,20 +5,11 @@ nextflow.preview.dsl=2
 params.cpus = 1
 params.mem = 1024
 
-// metadataValidation inputs
-exp_tsv = file('data/experiment.tsv')
-rg_tsv = file('data/read_group.tsv')
-file_tsv = file('data/file.tsv')
-exp_tsv_fq = file('data/experiment-fq.tsv')
-rg_tsv_fq = file('data/read_group-fq.tsv')
-file_tsv_fq = file('data/file-fq.tsv')
+// common inputs
 seq_rg = file('data/seq_rg_output.json')
 seq_rg_fq = file('data/seq_rg-fq_output.json')
 
-// module imports
-include metadataValidation from '../modules/metadata_validation' params(seq_exp_json_name: 'seq_exp.json', seq_rg_json_name: 'seq_rg.json')
-include metadataValidation as metadataValidationFq from '../modules/metadata_validation' params(seq_exp_json_name: 'seq_exp-fq.json', seq_rg_json_name: 'seq_rg-fq.json')
-
+// testing utility processes
 process compareJSON {
     container 'cfmanteiga/alpine-bash-curl-jq'
     
@@ -37,16 +28,36 @@ process compareJSON {
 // Workflow syntax is a new: https://www.nextflow.io/docs/edge/dsl2.html#workflow
 // not documented in 'latest' but clearly working as seen below
 
-// metadataValidation Workflow with test compare
+// Metadata Validation Workflow with test compare
 workflow metadataValidationWF {
+    include metadataValidation from '../modules/metadata_validation' params(seq_exp_json_name: 'seq_exp.json', seq_rg_json_name: 'seq_rg.json')
+    include metadataValidation as metadataValidationFQ from '../modules/metadata_validation' params(seq_exp_json_name: 'seq_exp-fq.json', seq_rg_json_name: 'seq_rg-fq.json')
+
+    exp_tsv = file('data/experiment.tsv')
+    rg_tsv = file('data/read_group.tsv')
+    file_tsv = file('data/file.tsv')
+    exp_tsv_fq = file('data/experiment-fq.tsv')
+    rg_tsv_fq = file('data/read_group-fq.tsv')
+    file_tsv_fq = file('data/file-fq.tsv')
+
     metadataValidation(exp_tsv, rg_tsv, file_tsv)
-    metadataValidationFq(exp_tsv_fq, rg_tsv_fq, file_tsv_fq)
+    metadataValidationFQ(exp_tsv_fq, rg_tsv_fq, file_tsv_fq)
 
     compareJSON(metadataValidation.out[1], seq_rg)
-    compareJSON(metadataValidationFq.out[1], seq_rg_fq)
+    compareJSON(metadataValidationFQ.out[1], seq_rg_fq)
 }
 
-// main workflow
+// Sequence Validation 
+workflow sequenceValidationWF {
+    include sequenceValidation from '../modules/sequence_validation'
+    include sequenceValidation as sequenceValidationFQ from '../modules/sequence_validation'
+
+    sequenceValidation(seq_rg, Channel.fromPath('data/test_rg_3.*').collect())
+    sequenceValidationFQ(seq_rg_fq, Channel.fromPath('data/seq_rg_fq_test_files/*').collect())
+}
+
+// main workflow (runs by default)
 workflow {
     metadataValidationWF()
+    sequenceValidationWF()
 }
