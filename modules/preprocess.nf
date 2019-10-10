@@ -6,14 +6,17 @@ params.cpus = 1
 params.mem = 1024
 params.reads_max_discard_fraction = 0.05
 
-process extractJSONValues {
+process extractAlignedBasenameAndBundleType {
     container 'cfmanteiga/alpine-bash-curl-jq'
 
     input:
     val json
 
+    output:
+    stdout()
+
     """
-    jq '.aligned_basename' ${json}
+    jq '[.aligned_basename, .bundle_type]' <<< '${json}'
     """
 }
 
@@ -29,6 +32,7 @@ process seqDataToLane {
 
     output:
     file '*.lane.bam'
+    stdout()
 
     """
     seq-data-to-lane-bam.py -p ${seq_rg_json} -d ${seq} -m ${params.reads_max_discard_fraction}

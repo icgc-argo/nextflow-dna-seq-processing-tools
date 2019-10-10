@@ -61,24 +61,16 @@ workflow sequenceValidationWF {
 }
 
 workflow preprocessWF {
-    include seqDataToLane from '../modules/preprocess' params(reads_max_discard_fraction: 0.02)
-    include extractJSONValues from '../modules/preprocess'
+    include '../modules/preprocess' params(reads_max_discard_fraction: 0.02)
 
-    get: seq_rg_json
-    get: seq
-
-    main: 
-        seqDataToLane(seq_rg_json, seq)
-
-    emit:
-        data = seqDataToLane.out.stdout()
+    seqDataToLane(seq_rg, Channel.fromPath('data/test_rg_3.bam').collect())
+    extractAlignedBasenameAndBundleType(seqDataToLane.out[1])
+    extractAlignedBasenameAndBundleType.out.view()
 }
 
 // main workflow (runs by default)
 workflow {
     metadataValidationWF()
     sequenceValidationWF()
-    preprocessWF(seq_rg, Channel.fromPath('data/test_rg_3.bam').collect())
-
-    preprocessWF.data.view()
+    preprocessWF()
 }
