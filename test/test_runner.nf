@@ -1,6 +1,10 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
 
+// groovy goodness
+import groovy.json.JsonSlurper
+def jsonSlurper = new JsonSlurper()
+
 // processes resources
 params.cpus = 1
 params.mem = 1024
@@ -9,20 +13,38 @@ params.mem = 1024
 seq_rg = file('data/seq_rg_output.json')
 seq_rg_fq = file('data/seq_rg-fq_output.json')
 
-// testing utility processes
-process compareJSON {
-    container 'cfmanteiga/alpine-bash-curl-jq'
+// process compareJSON {
+//     container 'cfmanteiga/alpine-bash-curl-jq'
     
+//     input:
+//     file A
+//     file B
+    
+//     """
+//     jq --argfile a ${A} --argfile b ${B} -n \
+//     'def post_recurse(f): def r: (f | select(. != null) | r), .; r; def post_recurse: post_recurse(.[]?); \
+//     (\$a | (post_recurse | arrays) |= sort) as \$a | (\$b | (post_recurse | arrays) |= sort) as \$b | \
+//     if \$a == \$b then true else error("json does not match") end'
+//     """
+// }
+
+process compareMetadataValidationJSON {
     input:
-    file A
-    file B
-    
-    """
-    jq --argfile a ${A} --argfile b ${B} -n \
-    'def post_recurse(f): def r: (f | select(. != null) | r), .; r; def post_recurse: post_recurse(.[]?); \
-    (\$a | (post_recurse | arrays) |= sort) as \$a | (\$b | (post_recurse | arrays) |= sort) as \$b | \
-    if \$a == \$b then true else error("json does not match") end'
-    """
+    val A
+    val B
+
+    echo true
+
+    exec:
+        aMap = jsonSlurper.parseText(A)
+        aMap.files.read_groups.sort { a, b -> a.submitter_id <=> b.submitter_id }
+        aMap.files.read_group_submitter_id.toSorted()
+
+        bMap = jsonSlurper.parseText(B)
+        bMap.files.read_groups.sort { a, b -> a.submitter_id <=> b.submitter_id }
+        bMap.files.read_group_submitter_id.toSorted()
+
+        assert aMap.equals(bMap)
 }
 
 // Workflow syntax is a new: https://www.nextflow.io/docs/edge/dsl2.html#workflow
@@ -37,7 +59,7 @@ workflow metadataValidationWF {
     file_tsv = file('data/file.tsv')
 
     metadataValidation(exp_tsv, rg_tsv, file_tsv)
-    compareJSON(metadataValidation.out[1], seq_rg)
+    compareMetadataValidationJSON(metadataValidation.out[1].text, seq_rg.text)
 }
 
 workflow metadataValidationFQWF {
@@ -48,7 +70,7 @@ workflow metadataValidationFQWF {
     file_tsv_fq = file('data/file-fq.tsv')
 
     metadataValidationFQ(exp_tsv_fq, rg_tsv_fq, file_tsv_fq)
-    compareJSON(metadataValidationFQ.out[1], seq_rg_fq)
+    compareMetadataValidationJSON(metadataValidationFQ.out[1].text, seq_rg_fq.text)
 }
 
 // Sequence Validation 

@@ -1,6 +1,7 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
 
+// groovy goodness
 import groovy.json.JsonSlurper
 def jsonSlurper = new JsonSlurper()
 
