@@ -65,7 +65,10 @@ workflow preprocessWF {
 
     seqDataToLane(seq_rg, Channel.fromPath('data/test_rg_3.bam').collect())
     extractAlignedBasenameAndBundleType(seqDataToLane.out[1])
-    extractAlignedBasenameAndBundleType.out.view()
+
+    // test output
+    extractAlignedBasenameAndBundleType.out[0].view()
+    extractAlignedBasenameAndBundleType.out[1].view() 
 }
 
 // main workflow (runs by default)

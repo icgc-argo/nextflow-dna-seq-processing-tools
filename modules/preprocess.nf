@@ -1,23 +1,25 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
 
+import groovy.json.JsonSlurper
+def jsonSlurper = new JsonSlurper()
+
 // processes resources
 params.cpus = 1
 params.mem = 1024
 params.reads_max_discard_fraction = 0.05
 
 process extractAlignedBasenameAndBundleType {
-    container 'cfmanteiga/alpine-bash-curl-jq'
-
     input:
-    val json
+    val jsonString
 
     output:
-    stdout()
+    val result.aligned_basename
+    val result.bundle_type
 
-    """
-    jq '[.aligned_basename, .bundle_type]' <<< '${json}'
-    """
+    exec:
+        result = jsonSlurper.parseText(jsonString)
+
 }
 
 process seqDataToLane {
