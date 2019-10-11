@@ -6,6 +6,9 @@ import groovy.json.JsonSlurper
 def jsonSlurper = new JsonSlurper()
 
 
+/*
+Metadata Validation Utils
+*/
 def sortMetadataValidationJSON(jsonMap) {
     if (jsonMap.containsKey("files")) {
         jsonMap.files.sort { a, b -> a.name <=> b.name }
@@ -32,4 +35,15 @@ process compareMetadataValidationJSON {
         aMap = sortMetadataValidationJSON(jsonSlurper.parseText(A))
         bMap = sortMetadataValidationJSON(jsonSlurper.parseText(B))
         assert aMap.equals(bMap)
+}
+
+/*
+Sequence Validation Utils
+*/
+process assertSequenceIsValid {
+    input:
+    val outputJson
+
+    exec:
+        assert jsonSlurper.parseText(outputJson).valid == "valid"
 }

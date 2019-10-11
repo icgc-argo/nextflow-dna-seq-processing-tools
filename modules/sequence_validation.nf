@@ -15,6 +15,9 @@ process sequenceValidation {
     file seq_rg_json
     file seq
 
+    output:
+    stdout()
+
     """
     seq-validation.py -p ${seq_rg_json} -d ${seq}
     """
