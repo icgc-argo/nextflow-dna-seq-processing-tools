@@ -55,13 +55,13 @@ workflow sequenceValidationWF {
 
 // Preprocess
 workflow preprocessWF {
-    include seqDataToLaneBam from '../modules/preprocess' params(reads_max_discard_fraction: 0.02)
-    include seqDataToLaneBam as seqDataToLaneBamFQ from '../modules/preprocess'
-    include seqDataToLaneBam as seqDataToLaneBamFQBZ2 from '../modules/preprocess'
+    include seqDataToLaneBam from '../modules/seq_data_to_lane_bam' params(reads_max_discard_fraction: 0.02)
+    include seqDataToLaneBam as seqDataToLaneBamFQ from '../modules/seq_data_to_lane_bam'
+    include seqDataToLaneBam as seqDataToLaneBamFQBZ2 from '../modules/seq_data_to_lane_bam'
 
-    include extractAlignedBasenameAndBundleType from '../modules/preprocess'
-    include extractAlignedBasenameAndBundleType as extractAlignedBasenameAndBundleTypeFQ from '../modules/preprocess'
-    include extractAlignedBasenameAndBundleType as extractAlignedBasenameAndBundleTypeFQBZ2 from '../modules/preprocess'
+    include extractAlignedBasenameAndBundleType from '../modules/seq_data_to_lane_bam'
+    include extractAlignedBasenameAndBundleType as extractAlignedBasenameAndBundleTypeFQ from '../modules/seq_data_to_lane_bam'
+    include extractAlignedBasenameAndBundleType as extractAlignedBasenameAndBundleTypeFQBZ2 from '../modules/seq_data_to_lane_bam'
 
     seqDataToLaneBam(seq_rg, Channel.fromPath("${test_data_dir}/test_rg_3.bam").collect())
     seqDataToLaneBamFQ(seq_rg_fq, Channel.fromPath("${test_data_dir}/seq_rg_fq_test_files/*").collect())
