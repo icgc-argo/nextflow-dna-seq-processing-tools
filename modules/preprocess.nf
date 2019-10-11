@@ -23,7 +23,7 @@ process extractAlignedBasenameAndBundleType {
 
 }
 
-process seqDataToLane {
+process seqDataToLaneBam {
 
     container 'quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.0.1.3'
 
@@ -38,6 +38,7 @@ process seqDataToLane {
     stdout()
 
     """
+    export TMPDIR=\$PWD
     seq-data-to-lane-bam.py -p ${seq_rg_json} -d ${seq} -m ${params.reads_max_discard_fraction}
     """
 }

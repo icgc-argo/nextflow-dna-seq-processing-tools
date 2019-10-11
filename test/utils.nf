@@ -47,3 +47,15 @@ process assertSequenceIsValid {
     exec:
         assert jsonSlurper.parseText(outputJson).valid == "valid"
 }
+
+/*
+Preprocess Utils
+*/
+process assertPreprocessIsValid {
+    input:
+    val outputJson
+    val expected_basename
+
+    exec:
+        assert jsonSlurper.parseText(outputJson).aligned_basename == expected_basename
+}
