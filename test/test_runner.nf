@@ -1,9 +1,8 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
 
-// groovy goodness
-import groovy.json.JsonSlurper
-def jsonSlurper = new JsonSlurper()
+// testing utilities
+include './utils'
 
 // processes resources
 params.cpus = 1
@@ -13,39 +12,6 @@ params.mem = 1024
 seq_rg = file('data/seq_rg_output.json')
 seq_rg_fq = file('data/seq_rg-fq_output.json')
 
-// process compareJSON {
-//     container 'cfmanteiga/alpine-bash-curl-jq'
-    
-//     input:
-//     file A
-//     file B
-    
-//     """
-//     jq --argfile a ${A} --argfile b ${B} -n \
-//     'def post_recurse(f): def r: (f | select(. != null) | r), .; r; def post_recurse: post_recurse(.[]?); \
-//     (\$a | (post_recurse | arrays) |= sort) as \$a | (\$b | (post_recurse | arrays) |= sort) as \$b | \
-//     if \$a == \$b then true else error("json does not match") end'
-//     """
-// }
-
-process compareMetadataValidationJSON {
-    input:
-    val A
-    val B
-
-    echo true
-
-    exec:
-        aMap = jsonSlurper.parseText(A)
-        aMap.files.read_groups.sort { a, b -> a.submitter_id <=> b.submitter_id }
-        aMap.files.read_group_submitter_id.toSorted()
-
-        bMap = jsonSlurper.parseText(B)
-        bMap.files.read_groups.sort { a, b -> a.submitter_id <=> b.submitter_id }
-        bMap.files.read_group_submitter_id.toSorted()
-
-        assert aMap.equals(bMap)
-}
 
 // Workflow syntax is a new: https://www.nextflow.io/docs/edge/dsl2.html#workflow
 // not documented in 'latest' but clearly working as seen below
@@ -89,13 +55,14 @@ workflow preprocessWF {
     extractAlignedBasenameAndBundleType(seqDataToLane.out[1])
 
     // test output
-    extractAlignedBasenameAndBundleType.out[0].view()
-    extractAlignedBasenameAndBundleType.out[1].view() 
+    // extractAlignedBasenameAndBundleType.out[0].view()
+    // extractAlignedBasenameAndBundleType.out[1].view() 
 }
 
 // main workflow (runs by default)
 workflow {
     metadataValidationWF()
+    metadataValidationFQWF()
     sequenceValidationWF()
     preprocessWF()
 }
