@@ -53,7 +53,7 @@ workflow sequenceValidationWF {
     assertSequenceIsValid(sequenceValidationFQ.out)
 }
 
-// Preprocess
+// Preprocess (seqDataToLaneBam + extractAlignedBasenameAndBundleType)
 workflow preprocessWF {
     include seqDataToLaneBam from '../modules/seq_data_to_lane_bam' params(reads_max_discard_fraction: 0.02)
     include seqDataToLaneBam as seqDataToLaneBamFQ from '../modules/seq_data_to_lane_bam'
@@ -66,10 +66,14 @@ workflow preprocessWF {
     seqDataToLaneBam(seq_rg, Channel.fromPath("${test_data_dir}/test_rg_3.bam").collect())
     seqDataToLaneBamFQ(seq_rg_fq, Channel.fromPath("${test_data_dir}/seq_rg_fq_test_files/*").collect())
     seqDataToLaneBamFQBZ2(seq_rg_fq_bz2, Channel.fromPath("${test_data_dir}/seq_rg_fq_bz2_test_files/*").collect())
+}
 
-    assertPreprocessIsValid(seqDataToLaneBam.out[1], "172cd780-231b-56ee-815a-f45a29cc3bd9.3.20191011.wgs.grch38")
-    assertPreprocessIsValid(seqDataToLaneBamFQ.out[1], "dcde1423-4210-5c9b-a72c-29579a6cfbb3.3.20191011.wgs.grch38")
-    assertPreprocessIsValid(seqDataToLaneBamFQBZ2.out[1], "49ae632d-5d56-5637-b2f2-1482ab7c1b35.1.20191011.wgs.grch38")
+// Merge Markdup
+workflow mergeMarkdupWF {
+    include '../modules/bam_merge_sort_markdup.nf' params(markdup: true, lossy: true, output_format: ['bam', 'cram'])
+
+    bamMergeSortMarkdup(Channel.fromPath("${test_data_dir}/grch38_lanes/*").collect(), Channel.fromPath("${test_data_dir}/reference/*").collect(), "HCC1143.3.20190726.wgs.grch38")
+    extractBundleType(bamMergeSortMarkdup.out[1])
 }
 
 
@@ -78,4 +82,5 @@ workflow {
     metadataValidationWF()
     sequenceValidationWF()
     preprocessWF()
+    mergeMarkdupWF()
 }
