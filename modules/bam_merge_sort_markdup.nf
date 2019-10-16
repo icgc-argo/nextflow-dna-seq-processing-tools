@@ -10,18 +10,22 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
-params.lossy = false
+params.output_format = ['cram'] // options are ['cram', 'bam']
 
 // optional process inputs
-markdup = 'OPTIONAL_INPUT'
-output_format = 'OPTIONAL_INPUT'
+params.markdup = 'OPTIONAL_INPUT'
+params.lossy = 'OPTIONAL_INPUT'
 
 def generateCmdArgsFromParams() {
     cmdArgs = ""
 
     // process optional inputs
-    cmdArgs = params.markdup != 'OPTIONAL_INPUT' ? "${cmdArgs} -d ${params.markdup}" : cmdArgs
-    cmdArgs = params.output_format != 'OPTIONAL_INPUT' ? "${cmdArgs} -o ${params.output_format}" : cmdArgs
+    cmdArgs = params.markdup != 'OPTIONAL_INPUT' ? "${cmdArgs} -d" : cmdArgs
+    cmdArgs = params.lossy != 'OPTIONAL_INPUT' ? "${cmdArgs} -l" : cmdArgs
+
+    // required args
+    cmdArgs = "$cmdArgs -o ${params.output_format.join(' ')}"
+    cmdArgs = "$cmdArgs -n $params.cpus"
 
     // return trimmed cmd
     return cmdArgs.trim()
@@ -44,18 +48,21 @@ process bamMergeSortMarkdup {
 
     tag "${aligned_lane_bams} -- ${aligned_basename}"
 
+    cpus params.cpus
+    memory "${params.mem} MB"
+
     input:
     file aligned_lane_bams
     file ref_genome
     val aligned_basename
 
     output:
-    file aligned_bam optional true
-    file aligned_duplicate_metrics optional true
-    aligned_cram optional true
+    file "${aligned_basename}.*"
     stdout()
 
+    script:
+    ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
     """
-    metadata-validation.py -i $aligned_lane_bams -r $ref_genome -b $aligned_basename -n $params.cpus -l $params.lossy ${generateCmdArgsFromParams()}
+    bam-merge-sort-markdup.py -i $aligned_lane_bams -r $ref.fa -b $aligned_basename ${generateCmdArgsFromParams()}
     """
 }
