@@ -5,8 +5,11 @@ nextflow.preview.dsl=2
 params.cpus = 1
 params.mem = 1024
 
+// required params w/ default
+params.container_version = "0.1.2"
+
 process bwaMemAligner {
-    container 'quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.0.1.2'
+    container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version}"
 
     tag "${input_bam}"
 

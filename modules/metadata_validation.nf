@@ -5,6 +5,9 @@ nextflow.preview.dsl=2
 params.cpus = 1
 params.mem = 1024
 
+// required params w/ default
+params.container_version = "0.1.2"
+
 // optional process inputs
 params.meta_format = 'OPTIONAL_INPUT'
 params.exp_json = 'OPTIONAL_INPUT'
@@ -26,7 +29,7 @@ def generateCmdArgsFromParams() {
 
 process metadataValidation {
 
-    container 'quay.io/icgc-argo/metadata-validation:metadata-validation.0.1.2'
+    container "quay.io/icgc-argo/metadata-validation:metadata-validation.${params.container_version}"
 
     tag "[${exp_tsv.name}-${rg_tsv.name}-${file_tsv.name}] --> ${params.seq_exp_json_name} + ${params.seq_rg_json_name}"
 
