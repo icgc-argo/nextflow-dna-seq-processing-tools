@@ -63,6 +63,6 @@ process bamMergeSortMarkdup {
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
     """
-    bam-merge-sort-markdup.py -i $aligned_lane_bams -r $ref.fa -b $aligned_basename ${generateCmdArgsFromParams()}
+    bam-merge-sort-markdup.py -i $aligned_lane_bams -r $ref.fa -b $aligned_basename -n $params.cpus ${generateCmdArgsFromParams()}
     """
 }
