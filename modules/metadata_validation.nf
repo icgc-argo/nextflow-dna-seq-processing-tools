@@ -13,8 +13,8 @@ def generateCmdArgsFromParams() {
     cmdArgs = ""
 
     // process optional inputs
-    cmdArgs = params.meta_format != 'OPTIONAL_INPUT' ? "${cmdArgs} -m ${meta_format}" : cmdArgs
-    cmdArgs = params.exp_json != 'OPTIONAL_INPUT' ? "${cmdArgs} -j ${exp_json}" : cmdArgs
+    cmdArgs = params.meta_format != 'OPTIONAL_INPUT' ? "${cmdArgs} -m ${params.meta_format}" : cmdArgs
+    cmdArgs = params.exp_json != 'OPTIONAL_INPUT' ? "${cmdArgs} -j ${params.exp_json}" : cmdArgs
 
     // required args
     cmdArgs = "${cmdArgs} -o ${params.seq_exp_json_name}"
