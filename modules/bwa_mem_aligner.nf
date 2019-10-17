@@ -11,7 +11,7 @@ params.container_version = "0.1.2"
 process bwaMemAligner {
     container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version}"
 
-    tag "${input_bam}"
+    tag "${aligned_lane_prefix}.${input_bam.baseName}"
 
     cpus params.cpus
     memory "${params.mem} MB"

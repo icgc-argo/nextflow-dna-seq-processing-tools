@@ -83,14 +83,9 @@ workflow mergeMarkdupWF {
 
 // BWA MEM Aligner
 workflow bwaMemAlignerWF {
-    include bwaMemAligner as testJobLaneOne from '../modules/bwa_mem_aligner.nf'
-    include bwaMemAligner as testJobLaneLaneTwo from '../modules/bwa_mem_aligner.nf'
-    include bwaMemAligner as testJobLaneLaneThree from '../modules/bwa_mem_aligner.nf'
+    include bwaMemAligner as testJobLanes from '../modules/bwa_mem_aligner.nf'
 
-
-    testJobLaneOne(Channel.fromPath("${test_data_dir}/bwa_mem_lanes/C0HVY_2.lane.bam"), Channel.fromPath("${test_data_dir}/reference/*").collect(), "grch38-aligned")
-    testJobLaneLaneTwo(Channel.fromPath("${test_data_dir}/bwa_mem_lanes/C0HVY_2.lane.bam"), Channel.fromPath("${test_data_dir}/reference/*").collect(), "grch38-aligned")
-    testJobLaneLaneThree(Channel.fromPath("${test_data_dir}/bwa_mem_lanes/C0HVY_2.lane.bam"), Channel.fromPath("${test_data_dir}/reference/*").collect(), "grch38-aligned")
+    testJobLanes(Channel.fromPath("${test_data_dir}/bwa_mem_lanes/*"), Channel.fromPath("${test_data_dir}/reference/*").collect(), "grch38-aligned")
 }
 
 
