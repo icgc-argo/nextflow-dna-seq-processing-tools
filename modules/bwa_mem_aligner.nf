@@ -22,11 +22,11 @@ process bwaMemAligner {
     val aligned_lane_prefix
 
     output:
-    file "${aligned_lane_prefix}.${input_bam.baseName}"
+    file "${aligned_lane_prefix}.${input_bam.baseName}.bam"
 
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
     """
-    bwa-mem-aligner.py -i $input_bam -r $ref.fa -n $params.cpus -o $aligned_lane_prefix
+    bwa-mem-aligner.py -i $input_bam -r $ref.gz -n $params.cpus -o $aligned_lane_prefix
     """
 }
