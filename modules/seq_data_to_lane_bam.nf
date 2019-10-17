@@ -8,6 +8,9 @@ def jsonSlurper = new JsonSlurper()
 // processes resources
 params.cpus = 1
 params.mem = 1024
+
+// required params w/ default
+params.container_version = "0.1.3"
 params.reads_max_discard_fraction = 0.05
 
 process extractAlignedBasenameAndBundleType {
@@ -25,7 +28,7 @@ process extractAlignedBasenameAndBundleType {
 
 process seqDataToLaneBam {
 
-    container 'quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.0.1.3'
+    container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version}"
 
     tag "${seq_rg_json} -- ${seq}"
 

@@ -5,9 +5,12 @@ nextflow.preview.dsl=2
 params.cpus = 1
 params.mem = 1024
 
+// required params w/ default
+params.container_version = "0.1.3"
+
 process sequenceValidation {
 
-    container 'quay.io/icgc-argo/seq-validation:seq-validation.0.1.3'
+    container "quay.io/icgc-argo/seq-validation:seq-validation.${params.container_version}"
 
     tag "${seq_rg_json} -- ${seq}"
 

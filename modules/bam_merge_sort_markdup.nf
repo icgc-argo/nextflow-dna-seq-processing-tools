@@ -10,6 +10,7 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
+params.container_version = "0.1.3"
 params.output_format = ['cram'] // options are ['cram', 'bam']
 
 // optional process inputs
@@ -44,7 +45,7 @@ process extractBundleType {
 
 process bamMergeSortMarkdup {
 
-    container 'quay.io/icgc-argo/bam-merge-sort-markdup:bam-merge-sort-markdup.0.1.3'
+    container "quay.io/icgc-argo/bam-merge-sort-markdup:bam-merge-sort-markdup.${params.container_version}"
 
     tag "${aligned_lane_bams} -- ${aligned_basename}"
 
@@ -63,6 +64,6 @@ process bamMergeSortMarkdup {
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
     """
-    bam-merge-sort-markdup.py -i $aligned_lane_bams -r $ref.fa -b $aligned_basename ${generateCmdArgsFromParams()}
+    bam-merge-sort-markdup.py -i $aligned_lane_bams -r $ref.fa -b $aligned_basename -n $params.cpus ${generateCmdArgsFromParams()}
     """
 }
