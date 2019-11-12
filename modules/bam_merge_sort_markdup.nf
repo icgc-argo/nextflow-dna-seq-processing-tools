@@ -10,7 +10,7 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
-params.container_version = '0.1.3'
+params.container_version = "0.1.3"
 params.output_format = ['cram'] // options are ['cram', 'bam']
 
 // optional process inputs
@@ -53,12 +53,12 @@ process bamMergeSortMarkdup {
     memory "${params.mem} MB"
 
     input:
-    file aligned_lane_bams
-    file ref_genome
+    path aligned_lane_bams
+    path ref_genome
     val aligned_basename
 
     output:
-    file "${aligned_basename}.*"
+    path "${aligned_basename}.*"
     stdout()
 
     script:

@@ -6,7 +6,7 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
-params.container_version = '0.1.2'
+params.container_version = "0.1.2"
 
 // optional process inputs
 params.meta_format = 'OPTIONAL_INPUT'

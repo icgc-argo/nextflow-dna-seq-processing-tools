@@ -12,9 +12,9 @@ params.mem = 1024
 test_data_dir = "data"
 
 // common inputs
-seq_rg = file('data/seq_rg_output.json')
-seq_rg_fq = file('data/seq_rg-fq_output.json')
-seq_rg_fq_bz2 = file('data/seq_rg-fq_output.bz2.json')
+seq_rg = path('data/seq_rg_output.json')
+seq_rg_fq = path('data/seq_rg-fq_output.json')
+seq_rg_fq_bz2 = path('data/seq_rg-fq_output.bz2.json')
 
 
 // Workflow syntax is a new: 
@@ -26,13 +26,13 @@ workflow metadataValidationWF {
     include metadataValidation as testMVJobBam from '../modules/metadata_validation' params(seq_exp_json_name: 'seq_exp.json', seq_rg_json_name: 'seq_rg.json')
     include metadataValidation as testMVJobFQ from '../modules/metadata_validation' params(seq_exp_json_name: 'seq_exp-fq.json', seq_rg_json_name: 'seq_rg-fq.json')
 
-    exp_tsv = file("${test_data_dir}/experiment.tsv")
-    rg_tsv = file("${test_data_dir}/read_group.tsv")
-    file_tsv = file("${test_data_dir}/file.tsv")
+    exp_tsv = path("${test_data_dir}/experiment.tsv")
+    rg_tsv = path("${test_data_dir}/read_group.tsv")
+    file_tsv = path("${test_data_dir}/file.tsv")
 
-    exp_tsv_fq = file("${test_data_dir}/experiment-fq.tsv")
-    rg_tsv_fq = file("${test_data_dir}/read_group-fq.tsv")
-    file_tsv_fq = file("${test_data_dir}/file-fq.tsv")
+    exp_tsv_fq = path("${test_data_dir}/experiment-fq.tsv")
+    rg_tsv_fq = path("${test_data_dir}/read_group-fq.tsv")
+    file_tsv_fq = path("${test_data_dir}/file-fq.tsv")
 
     testMVJobBam(exp_tsv, rg_tsv, file_tsv)
     testMVJobFQ(exp_tsv_fq, rg_tsv_fq, file_tsv_fq)
