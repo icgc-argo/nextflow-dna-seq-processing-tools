@@ -17,25 +17,29 @@ params.display_output = false
 // Preprocess (seqDataToLaneBam + extractAlignedBasenameAndBundleType)
 workflow preprocess {
     include seqDataToLaneBam as testOneBam from '../modules/seq_data_to_lane_bam' params(reads_max_discard_fraction: 0.02)
-    include seqDataToLaneBam as test_FQ_BamDir from '../modules/seq_data_to_lane_bam'
-    include seqDataToLaneBam as test_FQ_BZ_BamDir from '../modules/seq_data_to_lane_bam'
+    include seqDataToLaneBam as testMultiple from '../modules/seq_data_to_lane_bam'
 
     include extractAlignedBasenameAndBundleType as testExtractOne from '../modules/seq_data_to_lane_bam'
     include extractAlignedBasenameAndBundleType as testExtractTwo from '../modules/seq_data_to_lane_bam'
-    include extractAlignedBasenameAndBundleType as testExtractThree from '../modules/seq_data_to_lane_bam'
 
-    testOneBam(Channel.fromPath('data/seq_rg_output.json'), Channel.fromPath("${test_data_dir}/test_rg_3.bam").collect())
-    test_FQ_BamDir(Channel.fromPath('data/seq_rg-fq_output.json'), Channel.fromPath("${test_data_dir}/seq_rg_fq_test_files/*").collect())
-    test_FQ_BZ_BamDir(Channel.fromPath('data/seq_rg-fq_output.bz2.json'), Channel.fromPath("${test_data_dir}/seq_rg_fq_bz2_test_files/*").collect())
+    testDataOne = Channel.of(
+        [file("${test_data_dir}/seq_rg_output.json"), file("${test_data_dir}/test_rg_3.bam")],
+    )
+
+    testDataTwo = Channel.of(
+        [file("${test_data_dir}/seq_rg-fq_output.json"), file("${test_data_dir}/seq_rg_fq_test_files/*").collect()],
+        [file("${test_data_dir}/seq_rg-fq_output.bz2.json"), file("${test_data_dir}/seq_rg_fq_bz2_test_files/*").collect()]
+    )
+
+    testOneBam(testDataOne)
+    testMultiple(testDataTwo)
 
     testExtractOne(testOneBam.out)
-    testExtractTwo(test_FQ_BamDir.out)
-    testExtractThree(test_FQ_BZ_BamDir.out)
-
+    testExtractTwo(testMultiple.out)
+    
     if (params.display_output) {
         testExtractOne.out.view()
         testExtractTwo.out.view()
-        testExtractThree.out.view()
     }
 
 }
@@ -68,6 +72,6 @@ workflow merge {
 // MAIN WORKFLOW (runs by default)
 workflow {
     preprocess()
-    align()
-    merge()
+    // align()
+    // merge()
 }

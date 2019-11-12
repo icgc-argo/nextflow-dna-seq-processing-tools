@@ -31,8 +31,7 @@ process seqDataToLaneBam {
     tag "${seq_rg_json} -- ${seq}"
 
     input:
-        path seq_rg_json
-        path seq
+        tuple path(seq_rg_json), path(seq)
 
     output:
         tuple path('*.lane.bam'), stdout
