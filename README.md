@@ -1,7 +1,7 @@
 # DNA Sequencing Reads Processing (Nextflow)
-_Nextflow implementation of https://github.com/icgc-argo/dna-seq-processing-tools_
+_Nextflow implementation for some the tools found here https://github.com/icgc-argo/dna-seq-processing-tools_
 
-This repository intends to provide a Nextflow implementation of the Common Workflow Language (CWL) tools defined in the above referenced repository.
+This repository intends to provide a Nextflow implementation for some of the Common Workflow Language (CWL) tools defined in the above referenced repository.
 
 Using Nextflow's experimental DSL2, the modules defined in the repo can be imported and used as part of a larger workflow (or independently).
 
