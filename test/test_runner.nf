@@ -72,6 +72,6 @@ workflow merge {
 // MAIN WORKFLOW (runs by default)
 workflow {
     preprocess()
-    // align()
-    // merge()
+    align()
+    merge()
 }
