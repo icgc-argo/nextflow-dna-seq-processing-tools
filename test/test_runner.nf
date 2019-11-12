@@ -31,9 +31,9 @@ workflow preprocessWF {
     test_FQ_BamDir(seq_rg_fq, Channel.fromPath("${test_data_dir}/seq_rg_fq_test_files/*").collect())
     test_FQ_BZ_BamDir(seq_rg_fq_bz2, Channel.fromPath("${test_data_dir}/seq_rg_fq_bz2_test_files/*").collect())
 
-    testExtractOne(testOneBam.out[1])
-    testExtractTwo(test_FQ_BamDir.out[1])
-    testExtractThree(test_FQ_BZ_BamDir.out[1])
+    testExtractOne(testOneBam.out.lane_bams)
+    testExtractTwo(test_FQ_BamDir.out.lane_bams)
+    testExtractThree(test_FQ_BZ_BamDir.out.lane_bams)
 }
 
 // BWA MEM Aligner
@@ -49,7 +49,7 @@ workflow merge {
     include extractBundleType as testEBTJob from '../modules/bam_merge_sort_markdup.nf'
 
     testMMJob(Channel.fromPath("${test_data_dir}/grch38_lanes/*").collect(), Channel.fromPath("${test_data_dir}/reference/*").collect(), "HCC1143.3.20190726.wgs.grch38")
-    testEBTJob(testMMJob.out[1])
+    testEBTJob(testMMJob.out.merged_bams)
 }
 
 
