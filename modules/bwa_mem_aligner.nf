@@ -22,7 +22,7 @@ process bwaMemAligner {
         val aligned_lane_prefix
 
     output:
-        path "${aligned_lane_prefix}.${input_bam.baseName}.bam" emit: aligned_bam
+        path "${aligned_lane_prefix}.${input_bam.baseName}.bam"
 
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }

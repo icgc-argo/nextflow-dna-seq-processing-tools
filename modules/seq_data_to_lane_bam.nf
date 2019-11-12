@@ -15,10 +15,10 @@ params.reads_max_discard_fraction = 0.05
 
 process extractAlignedBasenameAndBundleType {
     input:
-        tuple path('*.lane.bam'), val(jsonString)
+        tuple lane_bams, val(jsonString)
 
     output:
-        tuple path('*.lane.bam'), val(result.aligned_basename), val(result.bundle_type) emit: lane_bams_with_basename_bundle_type
+        tuple lane_bams, val(result.aligned_basename), val(result.bundle_type)
 
     exec:
         result = jsonSlurper.parseText(jsonString)
@@ -35,7 +35,7 @@ process seqDataToLaneBam {
         path seq
 
     output:
-        tuple path('*.lane.bam'), stdout() emit: lane_bams
+        tuple path('*.lane.bam'), stdout
 
     """
     export TMPDIR=\$PWD

@@ -34,10 +34,10 @@ def generateCmdArgsFromParams() {
 
 process extractBundleType {
     input:
-        tuple file("*"), val(jsonString)
+        tuple merged_file, val(jsonString)
 
     output:
-        tuple file("*"), val(result) emit: merged_bams_with_bundle_type
+        tuple merged_file, val(result)
 
     exec:
         result = jsonSlurper.parseText(jsonString).bundle_type
@@ -58,7 +58,7 @@ process bamMergeSortMarkdup {
         val aligned_basename
 
     output:
-        tuple path("${aligned_basename}.*"), stdout() emit: merged_bams
+        tuple path("${aligned_basename}.*"), stdout
 
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
