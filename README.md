@@ -8,7 +8,7 @@ Using Nextflow's experimental DSL2, the modules defined in the repo can be impor
 
 ## Requirements
 
-- Nextflow: [v19.07.0](https://github.com/nextflow-io/nextflow/releases/tag/v19.07.0)
+- Nextflow: [v19.10.0](https://github.com/nextflow-io/nextflow/releases/tag/v19.10.0)
 - Docker
 
 ## Testing
