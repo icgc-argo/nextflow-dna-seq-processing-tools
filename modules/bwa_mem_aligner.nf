@@ -17,12 +17,12 @@ process bwaMemAligner {
     memory "${params.mem} MB"
 
     input:
-    path input_bam
-    path ref_genome
-    val aligned_lane_prefix
+        path input_bam
+        path ref_genome
+        val aligned_lane_prefix
 
     output:
-    path "${aligned_lane_prefix}.${input_bam.baseName}.bam" emit: aligned_bam
+        path "${aligned_lane_prefix}.${input_bam.baseName}.bam" emit: aligned_bam
 
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
