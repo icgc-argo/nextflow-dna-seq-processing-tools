@@ -48,7 +48,10 @@ workflow preprocess {
 workflow align {
     include bwaMemAligner as testJobLanes from '../modules/bwa_mem_aligner.nf'
 
-    testJobLanes(Channel.fromPath("${test_data_dir}/bwa_mem_lanes/*"), Channel.fromPath("${test_data_dir}/reference/*").collect(), "grch38-aligned")
+    bam_lanes = Channel.fromPath("${test_data_dir}/bwa_mem_lanes/*")
+    reference_files = Channel.fromPath("${test_data_dir}/reference/*").collect()
+
+    testJobLanes(bam_lanes, reference_files, "grch38-aligned")
 
     if (params.display_output) {
         testJobLanes.out.view()
@@ -60,7 +63,10 @@ workflow merge {
     include bamMergeSortMarkdup as testMMJob from '../modules/bam_merge_sort_markdup.nf' params(markdup: true, lossy: true, output_format: ['bam', 'cram'])
     include extractBundleType as testEBTJob from '../modules/bam_merge_sort_markdup.nf'
 
-    testMMJob(Channel.fromPath("${test_data_dir}/grch38_lanes/*").collect(), Channel.fromPath("${test_data_dir}/reference/*").collect(), "HCC1143.3.20190726.wgs.grch38")
+    grch38_lanes = Channel.fromPath("${test_data_dir}/grch38_lanes/*").collect()
+    reference_files = Channel.fromPath("${test_data_dir}/reference/*").collect()
+    
+    testMMJob(grch38_lanes, reference_files, "HCC1143.3.20190726.wgs.grch38")
     testEBTJob(testMMJob.out)
 
     if (params.display_output) {
