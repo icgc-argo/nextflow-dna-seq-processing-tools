@@ -10,7 +10,7 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
-params.container_version = '0.1.3'
+params.container_version = "0.1.3"
 params.output_format = ['cram'] // options are ['cram', 'bam']
 
 // optional process inputs
@@ -34,10 +34,10 @@ def generateCmdArgsFromParams() {
 
 process extractBundleType {
     input:
-    val jsonString
+        tuple merged_file, val(jsonString)
 
     output:
-    val result
+        tuple merged_file, val(result)
 
     exec:
         result = jsonSlurper.parseText(jsonString).bundle_type
@@ -53,13 +53,12 @@ process bamMergeSortMarkdup {
     memory "${params.mem} MB"
 
     input:
-    file aligned_lane_bams
-    file ref_genome
-    val aligned_basename
+        path aligned_lane_bams
+        path ref_genome
+        val aligned_basename
 
     output:
-    file "${aligned_basename}.*"
-    stdout()
+        tuple path("${aligned_basename}.*"), stdout
 
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }

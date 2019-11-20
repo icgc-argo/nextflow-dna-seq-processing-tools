@@ -6,7 +6,7 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
-params.container_version = '0.1.2'
+params.container_version = "0.1.2"
 
 process bwaMemAligner {
     container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version}"
@@ -17,12 +17,12 @@ process bwaMemAligner {
     memory "${params.mem} MB"
 
     input:
-    file input_bam
-    file ref_genome
-    val aligned_lane_prefix
+        path input_bam
+        path ref_genome
+        val aligned_lane_prefix
 
     output:
-    file "${aligned_lane_prefix}.${input_bam.baseName}.bam"
+        path "${aligned_lane_prefix}.${input_bam.baseName}.bam"
 
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
