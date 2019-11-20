@@ -41,3 +41,14 @@ process seqDataToLaneBam {
     seq-data-to-lane-bam.py -p ${seq_rg_json} -d ${seq} -m ${params.reads_max_discard_fraction}
     """
 }
+
+workflow preprocess {
+    get: analysis_id_input_file
+
+    main:
+        seqDataToLaneBam(analysis_id_input_file)
+        extractAlignedBasenameAndBundleType(seqDataToLaneBam.out)
+
+    emit:
+        lane_bams_basename_bundletype = extractAlignedBasenameAndBundleType.out
+}

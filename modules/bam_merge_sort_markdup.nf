@@ -66,3 +66,16 @@ process bamMergeSortMarkdup {
     bam-merge-sort-markdup.py -i $aligned_lane_bams -r $ref.fa -b $aligned_basename -n $params.cpus ${generateCmdArgsFromParams()}
     """
 }
+
+workflow merge {
+    get: aligned_lane_bams
+    get: ref_genome
+    get: aligned_basename
+
+    main:
+        bamMergeSortMarkdup(aligned_lane_bams, ref_genome, aligned_basename)
+        extractBundleType(bamMergeSortMarkdup.out)
+
+    emit:
+        merged_bam_bundletype = extractBundleType.out
+}

@@ -11,22 +11,22 @@ params.container_version = "0.1.2"
 process bwaMemAligner {
     container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version}"
 
-    tag "${aligned_lane_prefix}.${input_bam.baseName}"
+    tag "${aligned_lane_prefix}.${input_file.baseName}"
 
     cpus params.cpus
     memory "${params.mem} MB"
 
     input:
-        path input_bam
+        path input_file
         path ref_genome
         val aligned_lane_prefix
 
     output:
-        path "${aligned_lane_prefix}.${input_bam.baseName}.bam"
+        path "${aligned_lane_prefix}.${input_file.baseName}.*", emit: aligned_file
 
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
     """
-    bwa-mem-aligner.py -i $input_bam -r $ref.gz -n $params.cpus -o $aligned_lane_prefix
+    bwa-mem-aligner.py -i $input_file -r $ref.gz -n $params.cpus -o $aligned_lane_prefix
     """
 }
