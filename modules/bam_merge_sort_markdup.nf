@@ -77,5 +77,6 @@ workflow merge {
         extractBundleType(bamMergeSortMarkdup.out)
 
     emit:
+        merged_bam = bamMergeSortMarkdup.out.flatMap { fileBundlePair -> fileBundlePair[0] }
         merged_bam_bundletype = extractBundleType.out
 }
