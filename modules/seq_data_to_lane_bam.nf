@@ -10,7 +10,7 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
-params.container_version = "0.1.3"
+params.container_version = "0.1.5.0"
 params.reads_max_discard_fraction = 0.05
 
 process extractAlignedBasenameAndBundleType {
@@ -50,5 +50,6 @@ workflow preprocess {
         extractAlignedBasenameAndBundleType(seqDataToLaneBam.out)
 
     emit:
+        lane_bams = seqDataToLaneBam.out.flatMap { fileBundlePair -> fileBundlePair[0] }
         lane_bams_basename_bundletype = extractAlignedBasenameAndBundleType.out
 }
