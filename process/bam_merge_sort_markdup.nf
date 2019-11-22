@@ -1,10 +1,6 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
 
-// groovy goodness
-import groovy.json.JsonSlurper
-def jsonSlurper = new JsonSlurper()
-
 // processes resources
 params.cpus = 1
 params.mem = 1024
@@ -32,17 +28,6 @@ def generateCmdArgsFromParams() {
     return cmdArgs.trim()
 }
 
-process extractBundleType {
-    input:
-        tuple merged_file, val(jsonString)
-
-    output:
-        tuple merged_file, val(result)
-
-    exec:
-        result = jsonSlurper.parseText(jsonString).bundle_type
-}
-
 process bamMergeSortMarkdup {
 
     container "quay.io/icgc-argo/bam-merge-sort-markdup:bam-merge-sort-markdup.${params.container_version}"
@@ -65,18 +50,4 @@ process bamMergeSortMarkdup {
     """
     bam-merge-sort-markdup.py -i $aligned_lane_bams -r $ref.fa -b $aligned_basename -n $params.cpus ${generateCmdArgsFromParams()}
     """
-}
-
-workflow merge {
-    get: aligned_lane_bams
-    get: ref_genome
-    get: aligned_basename
-
-    main:
-        bamMergeSortMarkdup(aligned_lane_bams, ref_genome, aligned_basename)
-        extractBundleType(bamMergeSortMarkdup.out)
-
-    emit:
-        merged_bam = bamMergeSortMarkdup.out.flatMap { fileBundlePair -> fileBundlePair[0] }
-        merged_bam_bundletype = extractBundleType.out
 }

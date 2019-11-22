@@ -25,8 +25,8 @@ process bwaMemAligner {
         path "${aligned_lane_prefix}.${input_file.baseName}.*", emit: aligned_file
 
     script:
-    ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
-    """
-    bwa-mem-aligner.py -i $input_file -r $ref.gz -n $params.cpus -o $aligned_lane_prefix
-    """
+        ref = ref_genome.collectEntries { [(it.getExtension()) : it] }
+        """
+        bwa-mem-aligner.py -i $input_file -r $ref.gz -n $params.cpus -o $aligned_lane_prefix
+        """
 }
