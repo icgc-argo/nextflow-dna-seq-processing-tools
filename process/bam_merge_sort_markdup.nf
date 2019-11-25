@@ -32,7 +32,7 @@ process bamMergeSortMarkdup {
 
     container "quay.io/icgc-argo/bam-merge-sort-markdup:bam-merge-sort-markdup.${params.container_version}"
 
-    tag "${aligned_lane_bams} -- ${aligned_basename}"
+    tag "${aligned_basename}"
 
     cpus params.cpus
     memory "${params.mem} MB"
