@@ -32,23 +32,23 @@ workflow preprocessTest {
     testMultiple(testDataTwo)
     
     if (params.display_output) {
-        testOneBam.out.lane_bams_basename_bundletype.view()
-        testMultiple.out.lane_bams_basename_bundletype.view()
+        testOneBam.out.unaligned_lanes.view()
+        testMultiple.out.unaligned_lanes.view()
     }
 
 }
 
 // BWA MEM Aligner
 workflow alignTest {
-    include bwaMemAligner as testJobLanes from '../process/bwa_mem_aligner.nf'
+    include bwaMemAligner as align from '../process/bwa_mem_aligner.nf'
 
     bam_lanes = Channel.fromPath("${test_data_dir}/bwa_mem_lanes/*")
     reference_files = Channel.fromPath("${test_data_dir}/reference/*").collect()
 
-    testJobLanes(bam_lanes, reference_files, "grch38-aligned")
+    align(bam_lanes, reference_files, "grch38-aligned")
 
     if (params.display_output) {
-        testJobLanes.out.view()
+        align.out.aligned_file.view()
     }
 }
 
@@ -62,7 +62,7 @@ workflow mergeTest {
     merge(grch38_lanes, reference_files, "HCC1143.3.20190726.wgs.grch38")
 
     if (params.display_output) {
-        merge.out.view()
+        merge.out.merged_aligned_file.view()
     }
 }
 

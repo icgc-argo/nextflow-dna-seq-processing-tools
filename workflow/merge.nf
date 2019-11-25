@@ -23,9 +23,7 @@ workflow merge {
 
     main:
         bamMergeSortMarkdup(aligned_lane_bams, ref_genome, aligned_basename)
-        extractBundleType(bamMergeSortMarkdup.out)
 
     emit:
-        merged_bam = bamMergeSortMarkdup.out.flatMap { fileBundlePair -> fileBundlePair[0] }
-        merged_bam_bundletype = extractBundleType.out
+        merged_aligned_file = bamMergeSortMarkdup.out.merged_aligned_file
 }

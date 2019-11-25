@@ -19,7 +19,7 @@ process seqDataToLaneBam {
         tuple path(seq_rg_json), path(seq)
 
     output:
-        tuple path('*.lane.bam'), stdout
+        path '*.lane.bam', emit: unaligned_lanes
 
     """
     export TMPDIR=\$PWD

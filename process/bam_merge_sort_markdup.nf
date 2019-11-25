@@ -43,7 +43,7 @@ process bamMergeSortMarkdup {
         val aligned_basename
 
     output:
-        tuple path("${aligned_basename}.*"), stdout
+        path "${aligned_basename}.*", emit: merged_aligned_file
 
     script:
     ref = ref_genome.collectEntries { [(it.getExtension()) : it] }

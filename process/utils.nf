@@ -5,6 +5,8 @@ nextflow.preview.dsl=2
 import groovy.json.JsonSlurper
 def jsonSlurper = new JsonSlurper()
 
+// TODO: Currently not runnable in K8s, look at remaking these into containers
+// if we still need them, otherwise remove this file (noted: Nov. 25, 2019)
 
 process extractBundleType {
     input:
