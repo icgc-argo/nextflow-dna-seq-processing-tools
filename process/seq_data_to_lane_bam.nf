@@ -16,13 +16,13 @@ process seqDataToLaneBam {
     tag "${seq}"
 
     input:
-        tuple path(seq_rg_json), path(seq)
+        tuple path(seq_meta_json), path(seq)
 
     output:
         path '*.lane.bam', emit: unaligned_lanes
 
     """
     export TMPDIR=\$PWD
-    seq-data-to-lane-bam.py -p ${seq_rg_json} -d ${seq} -m ${params.reads_max_discard_fraction}
+    seq-data-to-lane-bam.py -p ${seq_meta_json} -d ${seq} -m ${params.reads_max_discard_fraction}
     """
 }
