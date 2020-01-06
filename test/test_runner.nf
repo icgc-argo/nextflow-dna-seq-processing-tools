@@ -20,12 +20,12 @@ workflow preprocessTest {
     include preprocess as testMultiple from '../workflow/preprocess'
 
     testDataOne = Channel.of(
-        [file("${test_data_dir}/seq_rg.json"), file("${test_data_dir}/test_rg_3.bam")],
+        [file("${test_data_dir}/seq-exp.bam.payload.json"), file("${test_data_dir}/seq_exp_bam/test_rg_3.v2.bam")],
     )
 
     testDataTwo = Channel.of(
-        [file("${test_data_dir}/seq_rg-fq.json"), file("${test_data_dir}/seq_rg_fq_test_files/*").collect()],
-        [file("${test_data_dir}/seq_rg-fq.bz2.json"), file("${test_data_dir}/seq_rg_fq_bz2_test_files/*").collect()]
+        [file("${test_data_dir}/seq_exp.fq.payload.json"), file("${test_data_dir}/seq_exp_fq/*").collect()],
+        [file("${test_data_dir}/seq_exp.fq.bz2.payload.json"), file("${test_data_dir}/seq_exp_fq_bz2/*").collect()]
     )
 
     testOneBam(testDataOne)
