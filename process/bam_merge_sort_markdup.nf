@@ -6,7 +6,7 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
-params.container_version = "0.1.4"
+params.container_version = "0.1.4.1"
 params.output_format = ['cram'] // options are ['cram', 'bam']
 
 // optional process inputs
