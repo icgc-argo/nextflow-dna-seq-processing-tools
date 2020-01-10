@@ -7,7 +7,7 @@ params.mem = 1024
 
 // required params w/ default
 params.container_version = "0.1.7.0"
-params.reads_max_discard_fraction = 0.05
+params.reads_max_discard_fraction = 0.08
 
 process seqDataToLaneBam {
 
