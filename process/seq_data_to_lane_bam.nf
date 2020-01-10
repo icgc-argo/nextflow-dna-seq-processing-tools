@@ -13,7 +13,8 @@ process seqDataToLaneBam {
 
     container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version}"
 
-    tag "${seq}"
+    tag "seqDataToLaneBam"
+    label "seqDataToLaneBam"
 
     input:
         tuple path(seq_meta_json), path(seq)
