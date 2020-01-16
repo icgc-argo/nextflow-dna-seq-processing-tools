@@ -17,4 +17,4 @@ The tests folder contains a `test_runner.wf` workflow that imports each module a
 
 `nextflow run test_runner.wf`
 
-This will kick off a complete test of all the modules in this repo. All test data is contained within `test/data`. There a few helper processes defined in the `utils.nf` workflow but they are strictly for testing purposed and not needed/intended for use outside of that scope.
+This will kick off a complete test of all the modules in this repo. All test data is contained within `test/data`.

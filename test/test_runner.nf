@@ -1,9 +1,6 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
 
-// testing utilities
-include './utils'
-
 // processes resources
 params.cpus = 1
 params.mem = 1024
@@ -14,7 +11,7 @@ test_data_dir = "data"
 // optionally display final process output
 params.display_output = false
 
-// Preprocess Test (seqDataToLaneBam + extractAlignedBasenameAndBundleType)
+// Preprocess Test (seqDataToLaneBam)
 workflow preprocessTest {
     include preprocess as testOneBam from '../workflow/preprocess' params(reads_max_discard_fraction: 0.02)
     include preprocess as testMultiple from '../workflow/preprocess'

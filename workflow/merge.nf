@@ -14,7 +14,6 @@ params.markdup = 'OPTIONAL_INPUT'
 params.lossy = 'OPTIONAL_INPUT'
 
 include bamMergeSortMarkdup from '../process/bam_merge_sort_markdup' params(params)
-include extractBundleType from '../process/utils'
 
 workflow merge {
     get: aligned_lane_bams
