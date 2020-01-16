@@ -15,6 +15,9 @@ process seqDataToLaneBam {
 
     label "seqToLane"
 
+    cpus params.cpus
+    memory "${params.mem} MB"
+
     input:
         tuple path(seq_meta_json), path(seq)
 
