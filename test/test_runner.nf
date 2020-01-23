@@ -11,10 +11,10 @@ test_data_dir = "data"
 // optionally display final process output
 params.display_output = false
 
-// Preprocess Test (seqDataToLaneBam)
-workflow preprocessTest {
-    include preprocess as testOneBam from '../workflow/preprocess' params(reads_max_discard_fraction: 0.02)
-    include preprocess as testMultiple from '../workflow/preprocess'
+// seqDataToLaneBam Test
+workflow seqDataToLaneBamTest {
+    include seqDataToLaneBam as testOneBam from '../process/seq_data_to_lane_bam'
+    include seqDataToLaneBam as testMultiple from '../process/seq_data_to_lane_bam'
 
     testDataOne = Channel.of(
         [file("${test_data_dir}/seq-exp.bam.payload.json"), file("${test_data_dir}/seq_exp_bam/test_rg_3.v2.bam")],
@@ -37,7 +37,7 @@ workflow preprocessTest {
 
 // BWA MEM Aligner
 workflow alignTest {
-    include bwaMemAligner as align from '../process/bwa_mem_aligner.nf'
+    include bwaMemAligner as align from '../process/bwa_mem_aligner'
 
     bam_lanes = Channel.fromPath("${test_data_dir}/bwa_mem_lanes/*")
     reference_files = Channel.fromPath("${test_data_dir}/reference/*").collect()
@@ -51,7 +51,7 @@ workflow alignTest {
 
 // Merge
 workflow mergeTest {
-    include merge from '../workflow/merge.nf' params(markdup: true, lossy: true, output_format: ['bam', 'cram'])
+    include merge from '../workflow/merge' params(markdup: true, lossy: true, output_format: ['bam', 'cram'])
 
     grch38_lanes = Channel.fromPath("${test_data_dir}/grch38_lanes/*").collect()
     reference_files = Channel.fromPath("${test_data_dir}/reference/*").collect()
@@ -66,7 +66,7 @@ workflow mergeTest {
 
 // MAIN WORKFLOW (runs by default)
 workflow {
-    preprocessTest()
+    seqDataToLaneBamTest()
     alignTest()
     mergeTest()
 }

@@ -6,8 +6,9 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
-params.container_version = "0.1.7.0"
-params.reads_max_discard_fraction = 0.08
+params.container_version = "0.2.0.0"
+params.reads_max_discard_fraction = -1
+params.tool = ""
 
 process seqDataToLaneBam {
 
@@ -24,8 +25,15 @@ process seqDataToLaneBam {
     output:
         path '*.lane.bam', emit: unaligned_lanes
 
+    script:
+    reads_max_discard_fraction = params.reads_max_discard_fraction < 0 ? 0.05 : params.reads_max_discard_fraction
+    arg_tool = params.tool != "" ? "-t ${params.tool}" : ""
     """
-    export TMPDIR=\$PWD
-    seq-data-to-lane-bam.py -p ${seq_meta_json} -d ${seq} -m ${params.reads_max_discard_fraction}
+    seq-data-to-lane-bam.py \
+      -p ${seq_meta_json} \
+      -d ${seq} \
+      -m ${reads_max_discard_fraction} \
+      -n ${params.cpus} \
+      ${arg_tool}
     """
 }
