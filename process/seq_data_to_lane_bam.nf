@@ -3,7 +3,7 @@ nextflow.preview.dsl=2
 
 // processes resources
 params.cpus = 1
-params.mem = 1024
+params.mem = 1
 
 // required params w/ default
 params.container_version = "0.2.0.0"
@@ -17,7 +17,7 @@ process seqDataToLaneBam {
     label "seqToLane"
 
     cpus params.cpus
-    memory "${params.mem} MB"
+    memory "${params.mem} GB"
 
     input:
         tuple path(seq_meta_json), path(seq)
