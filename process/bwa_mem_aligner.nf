@@ -12,6 +12,7 @@ process bwaMemAligner {
     container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version}"
 
     label "align"
+    tag "${input_file.size()}"
 
     cpus params.cpus
     memory "${params.mem} GB"
